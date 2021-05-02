@@ -1,7 +1,18 @@
 package com.github.DieselNiu.Service;
 
+import com.github.DieselNiu.mapper.UserMapper;
+
+import javax.inject.Inject;
+
 public class UserService {
+    private UserMapper userMapper;
+
+    @Inject
+    public UserService(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
+
     public User getUserById(Integer id) {
-        return new User(id, "");
+       return userMapper.findUserById(id);
     }
 }
