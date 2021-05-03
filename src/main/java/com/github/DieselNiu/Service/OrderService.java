@@ -1,7 +1,9 @@
 package com.github.DieselNiu.Service;
 
-import javax.inject.Inject;
+import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
+@Service
 public class OrderService {
 
     private final UserService userService;
