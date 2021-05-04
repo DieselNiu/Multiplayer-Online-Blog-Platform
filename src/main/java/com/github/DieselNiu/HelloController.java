@@ -1,7 +1,7 @@
 package com.github.DieselNiu;
 
-import com.github.DieselNiu.Service.User;
 import com.github.DieselNiu.Service.UserService;
+import com.github.DieselNiu.entity.User;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

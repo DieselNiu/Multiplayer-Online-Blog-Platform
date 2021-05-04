@@ -1,5 +1,6 @@
 package com.github.DieselNiu.Service;
 
+import com.github.DieselNiu.entity.User;
 import com.github.DieselNiu.mapper.UserMapper;
 import org.springframework.stereotype.Service;
 
