@@ -2,6 +2,7 @@ package com.github.DieselNiu.controller;
 
 import com.github.DieselNiu.Service.UserService;
 import com.github.DieselNiu.entity.User;
+import com.github.DieselNiu.mapper.UserMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
