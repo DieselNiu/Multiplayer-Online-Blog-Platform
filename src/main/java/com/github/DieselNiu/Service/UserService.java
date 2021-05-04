@@ -16,43 +16,47 @@ import java.util.concurrent.ConcurrentHashMap;
 public class UserService implements UserDetailsService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    private Map<String, String> userPasswords = new ConcurrentHashMap<>();
+    private Map<String, User> users = new ConcurrentHashMap<>();
 
-    //    @Inject
+//    @Inject
 //    public UserService(BCryptPasswordEncoder bCryptPasswordEncoder) {
 //        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-//        save("niuweizhe","niuweizhe");
+//        save("niuweizhe", "niuweizhe");
+//    }
     @Inject
     public void setbCryptPasswordEncoder(BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         save("niuweizhe", "niuweizhe");
     }
 
-    public void setUserPasswords(Map<String, String> userPasswords) {
-        this.userPasswords = userPasswords;
-    }
+//    public void setUsers(Map<String, String> users) {
+//        this.users = users;
+//    }
 //    }
 
 
     public void save(String username, String password) {
-        userPasswords.put(username, bCryptPasswordEncoder.encode(password));
+        users.put(username, new User(1, username, bCryptPasswordEncoder.encode(password)));
     }
 
-    public String getPassword(String username) {
-        return userPasswords.get(username);
-    }
-
-    public User getUserById(Integer id) {
-        return null;
+    //    public String getPassword(String username) {
+//        return userPasswords.get(username);
+//    }
+//
+//    public User getUserById(Integer id) {
+//        return null;
+//    }
+    public User getUserByUsername(String username) {
+        return users.get(username);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        if (!userPasswords.containsKey(username)) {
+        if (!users.containsKey(username)) {
             throw new UsernameNotFoundException(username + "不存在！");
 
         }
-        String encodedPassword = userPasswords.get(username);
-        return new org.springframework.security.core.userdetails.User(username, encodedPassword, Collections.emptyList());
+        User user = users.get(username);
+        return new org.springframework.security.core.userdetails.User(username, user.getEncryptedPassword(), Collections.emptyList());
     }
 }
