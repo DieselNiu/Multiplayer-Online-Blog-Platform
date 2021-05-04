@@ -40,7 +40,7 @@ public class AuthController {
     public Result  login(@RequestBody Map<String, Object> usernameAndPassword) {
         String username = usernameAndPassword.get("username").toString();
         String password = usernameAndPassword.get("password").toString();
-        UserDetails userDetails = null;
+        UserDetails userDetails;
         try{
             userDetails = userDetailsService.loadUserByUsername(username);
         } catch (UsernameNotFoundException e ){
