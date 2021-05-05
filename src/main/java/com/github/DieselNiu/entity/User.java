@@ -1,11 +1,14 @@
 package com.github.DieselNiu.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.time.Instant;
 
 public class User {
     Integer id;
     String username;
     String avatar;
+    @JsonIgnore
     String encryptedPassword;
     Instant createdAt;
     Instant updatedAt;
