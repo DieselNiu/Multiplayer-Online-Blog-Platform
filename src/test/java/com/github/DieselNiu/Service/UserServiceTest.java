@@ -1,4 +1,5 @@
 package com.github.DieselNiu.Service;
+
 import com.github.DieselNiu.entity.User;
 import com.github.DieselNiu.mapper.UserMapper;
 import org.junit.jupiter.api.Assertions;
@@ -10,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -49,8 +51,5 @@ class UserServiceTest {
         UserDetails userDetails = userService.loadUserByUsername("myUser");
         Assertions.assertEquals("myUser", userDetails.getUsername());
         Assertions.assertEquals("myEncodedPassword", userDetails.getPassword());
-
-
     }
-
 }

@@ -16,7 +16,7 @@ public class Result {
     }
 
     public static Result failure(String message) {
-        return new Result("fail", message, false,null);
+        return new Result("fail", message, false, null);
     }
 
 
