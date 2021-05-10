@@ -99,7 +99,9 @@ public class AuthController {
         // 把用户名和密码比对一下看这个人是不是要登录的这个人
         try {
             authenticationManager.authenticate(token); //进行鉴权
-            SecurityContextHolder.getContext().setAuthentication(token);// 把用户信息保存在一个地方
+
+            SecurityContextHolder.getContext().setAuthentication(token); // 把用户信息保存在一个地方
+
             return new Result("ok", "登录成功", true,
                     userService.getUserByUsername(username));
         } catch (BadCredentialsException e) {

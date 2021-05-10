@@ -17,11 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
 import javax.servlet.http.HttpSession;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
@@ -42,7 +39,10 @@ class AuthControllerTest {
     private AuthenticationManager authenticationManager;
 
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-//junit看见后后再每次调用test前调用setup
+
+
+    //junit看见后后再每次调用test前调用setup
+
     @BeforeEach
     void setUp() {
         mvc = MockMvcBuilders.standaloneSetup(new AuthController(userService, authenticationManager)).build();
@@ -65,7 +65,8 @@ class AuthControllerTest {
         usernamePassword.put("username", "MyUser");
         usernamePassword.put("password", "MyPassword");
 
-        Mockito.when(userService.loadUserByUsername("MyUser")).thenReturn(new User("MyUser",bCryptPasswordEncoder.encode("MyPassword"),Collections.emptyList()));
+        Mockito.when(userService.loadUserByUsername("MyUser")).thenReturn(new User("MyUser", bCryptPasswordEncoder.encode("MyPassword"), Collections.emptyList()));
+
         Mockito.when(userService.getUserByUsername("MyUser")).thenReturn(new com.github.DieselNiu.entity.User(123, "MyUser", bCryptPasswordEncoder.encode("MyPassword")));
 
         MvcResult response = mvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON_VALUE)
