@@ -17,6 +17,7 @@ public class UserService implements UserDetailsService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Inject
     private UserMapper userMapper;
+
     public void save(String username, String password) {
         userMapper.save(username, bCryptPasswordEncoder.encode(password));
     }
