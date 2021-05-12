@@ -1,7 +1,7 @@
 package com.github.DieselNiu.Service;
 
 import com.github.DieselNiu.entity.User;
-import com.github.DieselNiu.mapper.UserMapper;
+import com.github.DieselNiu.dao.UserMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

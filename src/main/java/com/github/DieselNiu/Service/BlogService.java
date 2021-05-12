@@ -27,5 +27,6 @@ public class BlogService {
             // throw new RuntimeException(e);
             return BlogListResult.failBlogResult("系统异常");
         }
+
     }
 }

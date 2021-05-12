@@ -1,4 +1,4 @@
-package com.github.DieselNiu.mapper;
+package com.github.DieselNiu.dao;
 
 import com.github.DieselNiu.entity.User;
 import org.apache.ibatis.annotations.Mapper;
@@ -13,9 +13,6 @@ public interface UserMapper {
     @Select("insert into user(username, encrypted_passwords, created_at, updated_at) " +
             "values(#{username}, #{encryptedPassword}, now(), now())")
     void save(@Param("username") String username, @Param("encryptedPassword") String encryptedPassword);
-
-
-
 
 
 }
