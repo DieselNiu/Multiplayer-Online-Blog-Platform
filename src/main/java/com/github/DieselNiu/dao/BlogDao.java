@@ -7,7 +7,7 @@ import java.util.List;
 
 @Component
 public class BlogDao {
-    public List<Blog> getBlogList(Integer page, Integer pageSize,Integer userId) {
+    public List<Blog> getBlogList(Integer page, Integer pageSize, Integer userId) {
         return null;
     }
 }

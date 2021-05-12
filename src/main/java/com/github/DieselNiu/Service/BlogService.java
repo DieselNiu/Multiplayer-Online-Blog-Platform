@@ -16,7 +16,7 @@ public class BlogService {
         this.blogDao = blogDao;
     }
 
-    public List<Blog> getBlogList(Integer  page, Integer  pageSize, Integer  userId, Boolean atIndex) {
-        return blogDao.getBlogList(page,pageSize,userId);
+    public List<Blog> getBlogList(Integer page, Integer pageSize, Integer userId, Boolean atIndex) {
+        return blogDao.getBlogList(page, pageSize, userId);
     }
 }
