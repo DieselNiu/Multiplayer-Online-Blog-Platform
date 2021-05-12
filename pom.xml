@@ -93,32 +93,27 @@
 
     <build>
         <plugins>
-<!--            <plugin>-->
-<!--                &lt;!&ndash; for unit test &ndash;&gt;-->
-<!--                <artifactId>maven-surefire-plugin</artifactId>-->
-<!--                <version>2.22.2</version>-->
-<!--                <configuration>-->
-<!--&lt;!&ndash;                    <argLine>-Xmx2048m -XX:MaxPermSize=256m</argLine>&ndash;&gt;-->
-<!--                    <excludes>-->
-<!--                        <exclude>**/*IntegrationTest</exclude>-->
-<!--                    </excludes>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-
-<!--            <plugin>-->
-<!--                <artifactId>maven-failsafe-plugin</artifactId>-->
-<!--                <version>2.22.2</version>-->
-<!--                <configuration>-->
-<!--                    <includes>-->
-<!--                        <include>**/*IntegrationTest</include>-->
-<!--                    </includes>-->
-<!--                </configuration>-->
-
-<!--            </plugin>-->
-
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M4</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*IntegrationTest</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.0.0-M4</version>
+                <configuration>
+                    <includes>
+                        <include>**/*IntegrationTest</include>
+                    </includes>
+                </configuration>
             </plugin>
 
             <plugin>
@@ -171,15 +166,103 @@
                 </executions>
             </plugin>
 
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2</version>
+                <executions>
+                    <execution>
+                        <id>start-test-database</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>docker</executable>
+                            <arguments>
+                                <argument>run</argument>
+                                <argument>--name</argument>
+                                <argument>test-mysql</argument>
+                                <argument>-p</argument>
+                                <argument>3307:3306</argument>
+                                <argument>-e</argument>
+                                <argument>MYSQL_ROOT_PASSWORD=123456</argument>
+                                <argument>-d</argument>
+                                <argument>mysql:8.0</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>wait-test-database</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>sleep</executable>
+                            <arguments>
+                                <argument>45</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>teardown-test-database</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>docker</executable>
+                            <arguments>
+                                <argument>rm</argument>
+                                <argument>-f</argument>
+                                <argument>test-mysql</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>run</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-classpath</argument>
+                                <!-- automatically creates the classpath using all project dependencies,
+                                      also adding the project build directory -->
+                                <classpath/>
+                                <argument>com.github.DieselNiu.springboot.Application</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
-                <version>7.8.2</version>
+                <version>6.2.4</version>
                 <configuration>
                     <url>jdbc:mysql://localhost:3306/blog</url>
                     <user>root</user>
                     <password>123456</password>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>init-test-database</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>migrate</goal>
+                        </goals>
+                        <configuration>
+                            <url>jdbc:mysql://localhost:3307/blogtest?createDatabaseIfNotExist=true</url>
+                            <user>root</user>
+                            <password>123456</password>
+                        </configuration>
+                    </execution>
+                </executions>
                 <dependencies>
                     <dependency>
                         <groupId>mysql</groupId>
