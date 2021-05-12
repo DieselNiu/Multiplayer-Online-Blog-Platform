@@ -10,4 +10,8 @@ public class BlogDao {
     public List<Blog> getBlogList(Integer page, Integer pageSize, Integer userId) {
         return null;
     }
+
+    public int getToTalBlogNum() {
+        return -1;
+    }
 }
