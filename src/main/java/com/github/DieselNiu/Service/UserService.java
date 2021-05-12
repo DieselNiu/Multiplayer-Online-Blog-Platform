@@ -1,7 +1,7 @@
 package com.github.DieselNiu.Service;
 
 import com.github.DieselNiu.entity.User;
-import com.github.DieselNiu.mapper.UserMapper;
+import com.github.DieselNiu.dao.UserMapper;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
