@@ -16,10 +16,11 @@ public class BlogServiceTest {
     BlogService blogService;
 
     @Test
-    void testSuccessfulGetBlogList(){
-         blogService.getBlogList(1,10,null,true);
-        Mockito.verify(blogdao).getBlogList(1,10,null);
+    void testSuccessfulGetBlogList() {
+        blogService.getBlogList(1, 10, null, true);
+        Mockito.verify(blogdao).getBlogList(1, 10, null);
     }
+
 
 
 
