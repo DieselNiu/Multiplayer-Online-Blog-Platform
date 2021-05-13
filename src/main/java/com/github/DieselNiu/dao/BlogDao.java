@@ -5,6 +5,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,5 +30,33 @@ public class BlogDao {
 
     public int getToTalBlogNum() {
         return sqlSession.selectOne("blogMapper.getTotalBlogNum");
+    }
+
+    public Blog getBlogById(Integer blogId) {
+        return sqlSession.selectOne("blogMapper.getBlogById", blogId);
+    }
+
+    public int insertNewBlog(String title, String content, String description, Integer userId) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("title", title);
+        param.put("content", content);
+        param.put("description", description);
+        param.put("userId", userId);
+        sqlSession.insert("blogMapper.insertNewBlog", param);
+        BigInteger id = (BigInteger) param.get("id");
+        return id.intValue();
+    }
+
+    public int updateBlogById(String title, String content, String description, Integer blogId) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("title", title);
+        param.put("content", content);
+        param.put("description", description);
+        param.put("blogId", blogId);
+        return sqlSession.update("blogMapper.updateBlogById", param);
+    }
+
+    public void deleteBlogById(Integer blogId) {
+        sqlSession.delete("blogMapper.deleteBlogById", blogId);
     }
 }

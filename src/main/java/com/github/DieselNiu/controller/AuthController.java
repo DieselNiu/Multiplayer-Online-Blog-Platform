@@ -1,7 +1,7 @@
 package com.github.DieselNiu.controller;
 
 import com.github.DieselNiu.Service.UserService;
-import com.github.DieselNiu.entity.Result;
+import com.github.DieselNiu.entity.AuthResult;
 import com.github.DieselNiu.entity.User;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,67 +33,64 @@ public class AuthController {
 
     @GetMapping("/auth")
     @ResponseBody  // 将返回值json限定在responseBody里面
-    public Object auth() {
+    public AuthResult auth() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User loggedInUser = userService.getUserByUsername(authentication == null ? null : authentication.getName());
 
         if (loggedInUser == null) {
-            return new Result("ok", "用户没有登录", false);
+            return AuthResult.notLoggedAuthResult();
         } else {
 //            return loggedInUser;
-            return new Result("ok", null, true, loggedInUser);
+            return AuthResult.loggedAuthResult(loggedInUser);
         }
     }
 
     @GetMapping("/auth/logout")
     @ResponseBody
     public Object logout() {
-        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        User loggedInUser = userService.getUserByUsername(userName);
+        User loggedInUser = this.userService.getUserByUsername(authentication == null ? null : authentication.getName());
 
         if (loggedInUser == null) {
-            return Result.failure("用户没有登录");
+            return AuthResult.failedResult("用户尚未登录");
 
         } else {
             SecurityContextHolder.clearContext();
-            return new Result("ok", "success", false);
+            return AuthResult.logoutResult("注销成功");
         }
     }
 
     @PostMapping("/auth/register")
     @ResponseBody
-    public Result register(@RequestBody Map<String, String> usernameAndPassword) {
+    public Object register(@RequestBody Map<String, String> usernameAndPassword) {
         String username = usernameAndPassword.get("username");
         String password = usernameAndPassword.get("password");
-        if (username == null || password == null) {
-            return Result.failure("username/password ==null");
-        }
         if (username.length() < 1 || username.length() > 15) {
-            return Result.failure("invalid username");
+            return AuthResult.failedResult("invalid username");
         }
         if (password.length() < 6 || password.length() > 16) {
-            return Result.failure("invalid password");
+            return AuthResult.failedResult("invalid password");
         }
         try {
-            userService.save(username, password);
+            userService.insertNewUser(username, password);
         } catch (DuplicateKeyException e) {
-            e.printStackTrace();
-            return Result.failure("user already exists");
+            return AuthResult.failedResult("username already exist");
         }
-        return new Result("ok", "success!", false);
+        login(usernameAndPassword);
+        return AuthResult.successfulResult("注册成功", userService.getUserByUsername(username));
     }
 
     @PostMapping("/auth/login")
     @ResponseBody
-    public Result login(@RequestBody Map<String, Object> usernameAndPassword) {
+    public Object login(@RequestBody Map<String, String> usernameAndPassword) {
         String username = usernameAndPassword.get("username").toString();
         String password = usernameAndPassword.get("password").toString();
         UserDetails userDetails;
         try {
             userDetails = userService.loadUserByUsername(username); //去自己的数据库拿到这个用户名的真正密码
         } catch (UsernameNotFoundException e) {
-            return Result.failure("用户不存在");
+            return AuthResult.failedResult("用户不存在");
         }
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
         // 把用户名和密码比对一下看这个人是不是要登录的这个人
@@ -102,10 +99,9 @@ public class AuthController {
 
             SecurityContextHolder.getContext().setAuthentication(token); // 把用户信息保存在一个地方
 
-            return new Result("ok", "登录成功", true,
-                    userService.getUserByUsername(username));
+            return AuthResult.successfulResult("登录成功", userService.getUserByUsername(username));
         } catch (BadCredentialsException e) {
-            return Result.failure("密码不正确");
+            return AuthResult.failedResult("密码不正确");
         }
     }
 }

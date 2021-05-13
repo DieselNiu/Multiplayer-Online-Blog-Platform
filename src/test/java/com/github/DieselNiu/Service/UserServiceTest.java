@@ -1,16 +1,21 @@
 package com.github.DieselNiu.Service;
 
+import com.github.DieselNiu.dao.UserDao;
+import com.github.DieselNiu.entity.AvatarGenerator;
 import com.github.DieselNiu.entity.User;
-import com.github.DieselNiu.dao.UserMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -18,38 +23,48 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
     @Mock
-    BCryptPasswordEncoder mockEncoder;
+    private UserDao mockUserDao;
     @Mock
-    UserMapper mockMapper;
+    private BCryptPasswordEncoder mockBCryptPasswordEncoder;
+    @Mock
+    AvatarGenerator mockAvatarGenerator;
     @InjectMocks
     UserService userService;
 
     @Test
-    public void testSave() {
-        //调用userService，验证userService将请求转发给了userMapper
-        when(mockEncoder.encode("myPassword")).thenReturn("myEncodedPassword");
-        userService.save("myUser", "myPassword");
-        verify(mockMapper).save("myUser", "myEncodedPassword");
+    void testsInsertNewUser() {
+        Map<String, String> param = new HashMap<>();
+        param.put("username", "MyUser");
+        param.put("encryptedPassword", "myEncodedPassword");
+        param.put("avatar", "https://s2.ax1x.com/2020/03/02/3f1FDe.jpg");
+
+        Mockito.when(mockAvatarGenerator.getRandomAvatar()).thenReturn("https://s2.ax1x.com/2020/03/02/3f1FDe.jpg");
+        Mockito.when(mockBCryptPasswordEncoder.encode("password"))
+                .thenReturn("myEncodedPassword");
+        userService.insertNewUser("MyUser", "password");
+        Mockito.verify(mockUserDao).insertNewUser(param);
     }
 
     @Test
-    public void testGetUserByUsername() {
-        userService.getUserByUsername("myUser");
-        verify(mockMapper).findUserByUsername("myUser");
+    void testGetUserByUsername() {
+        userService.getUserByUsername("MyUser");
+        Mockito.verify(mockUserDao).getUserByUsername("MyUser");
     }
 
     @Test
-    public void throwExceptionWhenUserNotFound() {
+    public void testLoadUserByUsernameWhenUserNotExist() {
+        Mockito.when(userService.getUserByUsername("MyUser"))
+                .thenReturn(null);
         Assertions.assertThrows(UsernameNotFoundException.class,
-                () -> userService.loadUserByUsername("myUser"));
+                () -> userService.loadUserByUsername("MyUser"));
     }
 
     @Test
-    public void returnUserDetailsWhenUserFound() {
-        when(mockMapper.findUserByUsername("myUser"))
-                .thenReturn(new User(123, "myUser", "myEncodedPassword"));
-        UserDetails userDetails = userService.loadUserByUsername("myUser");
-        Assertions.assertEquals("myUser", userDetails.getUsername());
-        Assertions.assertEquals("myEncodedPassword", userDetails.getPassword());
+    public void testLoadUserByUsernameWhenUserExist() {
+        Mockito.when(mockUserDao.getUserByUsername("MyUser"))
+                .thenReturn(new User("MyUser", "encodedPassword"));
+        UserDetails userDetails = userService.loadUserByUsername("MyUser");
+        Assertions.assertEquals("MyUser", userDetails.getUsername());
+        Assertions.assertEquals("encodedPassword", userDetails.getPassword());
     }
 }

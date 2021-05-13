@@ -52,14 +52,14 @@
         from blog
         where id = #{blogId}
     </delete>
-    <resultMap id="Blog" type="com.github.DieselNiu.springboot.entity.Blog">
+    <resultMap id="Blog" type="com.github.DieselNiu.entity.Blog">
         <id property="id" column="blog_id"/>
         <result property="title" column="blog_title"/>
         <result property="description" column="blog_description"/>
         <result property="content" column="blog_content"/>
         <result property="createdAt" column="blog_created_at"/>
         <result property="updatedAt" column="blog_updated_at"/>
-        <association property="user" javaType="com.github.DieselNiu.springboot.entity.User">
+        <association property="user" javaType="com.github.DieselNiu.entity.User">
             <id property="id" column="user_id"/>
             <result property="username" column="user_username"/>
             <result property="avatar" column="user_avatar"/>

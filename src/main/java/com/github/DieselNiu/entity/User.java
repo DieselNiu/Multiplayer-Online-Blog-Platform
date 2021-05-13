@@ -1,23 +1,35 @@
 package com.github.DieselNiu.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.time.Instant;
 
+@SuppressFBWarnings({"UWF_NULL_FIELD", "UWF_UNWRITTEN_FIELD"})
 public class User {
-    Integer id;
-    String username;
-    String avatar;
-    @JsonIgnore
-    String encryptedPassword;
-    Instant createdAt;
-    Instant updatedAt;
+    private Integer id;
+    private String username;
+    //    @JsonIgnore
+    private String encryptedPasswords;
+    private String avatar;
+    private Instant createdAt;
+    private Instant updatedAt;
 
-    public User(Integer id, String username, String encryptedPassword) {
-        this.id = id;
+    public User() {
+    }
+
+    public User(String username, String encryptedPassword) {
         this.username = username;
-        this.encryptedPassword = encryptedPassword;
+        this.encryptedPasswords = encryptedPassword;
         this.avatar = "";
+        this.createdAt = Instant.now();
+        this.updatedAt = Instant.now();
+    }
+
+    public User(String username, String encryptedPassword, String avatar) {
+        this.username = username;
+        this.encryptedPasswords = encryptedPassword;
+        this.avatar = avatar;
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();
     }
@@ -26,47 +38,35 @@ public class User {
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getEncryptedPassword() {
+        return encryptedPasswords;
     }
 
     public String getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public String getEncryptedPassword() {
-        return encryptedPassword;
-    }
-
-    public void setEncryptedPassword(String encryptedPassword) {
-        this.encryptedPassword = encryptedPassword;
-    }
-
     public Instant getCreatedAt() {
         return createdAt;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
     }
 
     public Instant getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }
