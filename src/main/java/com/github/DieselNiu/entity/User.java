@@ -1,6 +1,5 @@
 package com.github.DieselNiu.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.time.Instant;
