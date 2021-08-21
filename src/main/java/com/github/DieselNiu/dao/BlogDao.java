@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Component
 public class BlogDao {
-    private final SqlSession sqlSession;
+    private  SqlSession sqlSession;
 
     @Inject
     public BlogDao(SqlSession sqlSession) {
